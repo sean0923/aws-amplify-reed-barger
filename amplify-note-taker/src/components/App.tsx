@@ -39,9 +39,19 @@ const _App: React.FC = () => {
 
   const handleDeleteNote = (noteId: string): void => {
     const input = { id: noteId };
-    API.graphql(graphqlOperation(deleteNote, { input })).then((resp) => {
-      console.log('resp: ', resp);
-    });
+    API.graphql(graphqlOperation(deleteNote, { input })).then(
+      ({ data }: { data: ApiTypes.DeleteNoteMutation }) => {
+        if (data.deleteNote) {
+          const deletedNoteId = data.deleteNote.id;
+          const filteredNotes = notes.filter((note) => {
+            if (note) {
+              return note.id !== deletedNoteId;
+            }
+          });
+          setNotes(filteredNotes);
+        }
+      }
+    );
   };
 
   return (
