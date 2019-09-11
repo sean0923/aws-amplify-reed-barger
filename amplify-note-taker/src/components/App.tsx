@@ -2,22 +2,39 @@ import React from 'react';
 import { withAuthenticator } from 'aws-amplify-react';
 import styled from 'styled-components';
 import { API, graphqlOperation } from 'aws-amplify';
-import { createNote, deleteNote } from '../graphql/mutations';
+import { createNote, deleteNote, updateNote } from '../graphql/mutations';
 import { listNotes } from '../graphql/queries';
-import * as ApiTypes from '../API';
+
+interface Note {
+  id: string;
+  note: string;
+}
+
+interface CreateNoteResp {
+  data: { createNote: Note };
+}
+
+interface UpdateNoteResp {
+  data: { updateNote: Note };
+}
+
+interface DeleteNoteResp {
+  data: { deleteNote: Note };
+}
+
+interface ListNodeResp {
+  data: { listNotes: { items: Note[] } };
+}
 
 const _App: React.FC = () => {
-  const [notes, setNotes] = React.useState<ApiTypes.Note[]>([]);
+  const [notes, setNotes] = React.useState<Note[]>([]);
   const [note, setNote] = React.useState('');
+  const [selectedNoteId, setSelectedNoteId] = React.useState('');
 
   React.useEffect(() => {
-    API.graphql(graphqlOperation(listNotes)).then(({ data }: { data: ApiTypes.ListNotesQuery }) => {
-      if (data.listNotes) {
-        const notesFromDB = data.listNotes.items;
-        if (notesFromDB) {
-          setNotes(notesFromDB);
-        }
-      }
+    API.graphql(graphqlOperation(listNotes)).then((resp: ListNodeResp) => {
+      const notesFromDB = resp.data.listNotes.items;
+      setNotes(notesFromDB);
     });
   }, []);
 
@@ -27,31 +44,49 @@ const _App: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const input = { note };
-    API.graphql(graphqlOperation(createNote, { input })).then(
-      ({ data }: { data: ApiTypes.CreateNoteMutation }) => {
-        const newNote = data.createNote;
+    // create new note
+    if (selectedNoteId === '') {
+      const input = { note };
+      API.graphql(graphqlOperation(createNote, { input })).then((resp: CreateNoteResp) => {
+        const newNote = resp.data.createNote;
         setNotes([...notes, newNote]);
         setNote('');
-      }
-    );
+        setSelectedNoteId('');
+      });
+    } else {
+      // update exsiting note
+      const id = selectedNoteId;
+      const input = { id, note };
+      API.graphql(graphqlOperation(updateNote, { input })).then((resp: UpdateNoteResp) => {
+        const updatedNote = resp.data.updateNote;
+        const updatedNotes = notes.map((note) => {
+          if (note.id === updatedNote.id) {
+            return updatedNote;
+          }
+          return note;
+        });
+
+        setNotes(updatedNotes);
+        setNote('');
+        setSelectedNoteId('');
+      });
+    }
   };
 
   const handleDeleteNote = (noteId: string): void => {
     const input = { id: noteId };
-    API.graphql(graphqlOperation(deleteNote, { input })).then(
-      ({ data }: { data: ApiTypes.DeleteNoteMutation }) => {
-        if (data.deleteNote) {
-          const deletedNoteId = data.deleteNote.id;
-          const filteredNotes = notes.filter((note) => {
-            if (note) {
-              return note.id !== deletedNoteId;
-            }
-          });
-          setNotes(filteredNotes);
-        }
-      }
-    );
+    API.graphql(graphqlOperation(deleteNote, { input })).then((resp: DeleteNoteResp) => {
+      const deletedNoteId = resp.data.deleteNote.id;
+      const filteredNotes = notes.filter((note) => {
+        return note.id !== deletedNoteId;
+      });
+      setNotes(filteredNotes);
+    });
+  };
+
+  const populateExsitingNoteToInputWhenClicked = ({ id, note }: Note): void => {
+    setSelectedNoteId(id);
+    setNote(note);
   };
 
   return (
@@ -73,19 +108,22 @@ const _App: React.FC = () => {
 
         <div>
           {notes.map((note) => {
-            if (note) {
-              return (
-                <div key={note.id} className="flex items-center">
-                  <li className="list pa1 f3">{note.note}</li>
-                  <button
-                    className="bg-transparent bn f4"
-                    onClick={(): void => handleDeleteNote(note.id)}
-                  >
-                    <span>&times;</span>
-                  </button>
-                </div>
-              );
-            }
+            return (
+              <div key={note.id} className="flex items-center">
+                <li
+                  className="list pa1 f3"
+                  onClick={(): void => populateExsitingNoteToInputWhenClicked(note)}
+                >
+                  {note.note}
+                </li>
+                <button
+                  className="bg-transparent bn f4"
+                  onClick={(): void => handleDeleteNote(note.id)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+            );
           })}
         </div>
       </Wrapper>
