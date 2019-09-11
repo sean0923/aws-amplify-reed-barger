@@ -138,3 +138,9 @@ export type OnDeleteNoteSubscription = {
     note: string;
   } | null;
 };
+
+export type Note = {
+  __typename: 'Note';
+  id: string;
+  note: string;
+} | null;

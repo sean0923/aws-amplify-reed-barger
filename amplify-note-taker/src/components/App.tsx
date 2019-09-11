@@ -2,32 +2,22 @@ import React from 'react';
 import { withAuthenticator } from 'aws-amplify-react';
 import styled from 'styled-components';
 import { API, graphqlOperation } from 'aws-amplify';
-import { createNote } from '../graphql/mutations';
+import { createNote, deleteNote } from '../graphql/mutations';
 import { listNotes } from '../graphql/queries';
-
-interface Note {
-  id: string;
-  note: string;
-}
-
-interface RespFromCreateNoteMutation {
-  data: {
-    createNote: Note;
-  };
-}
-
-interface RespFromListNotesQuery {
-  data: { listNotes: { items: Note[] } };
-}
+import * as ApiTypes from '../API';
 
 const _App: React.FC = () => {
-  const [notes, setNotes] = React.useState<Note[]>([]);
+  const [notes, setNotes] = React.useState<ApiTypes.Note[]>([]);
   const [note, setNote] = React.useState('');
 
   React.useEffect(() => {
-    API.graphql(graphqlOperation(listNotes)).then((resp: RespFromListNotesQuery) => {
-      const notesFromDB = resp.data.listNotes.items;
-      setNotes(notesFromDB);
+    API.graphql(graphqlOperation(listNotes)).then(({ data }: { data: ApiTypes.ListNotesQuery }) => {
+      if (data.listNotes) {
+        const notesFromDB = data.listNotes.items;
+        if (notesFromDB) {
+          setNotes(notesFromDB);
+        }
+      }
     });
   }, []);
 
@@ -39,12 +29,19 @@ const _App: React.FC = () => {
     e.preventDefault();
     const input = { note };
     API.graphql(graphqlOperation(createNote, { input })).then(
-      (resp: RespFromCreateNoteMutation) => {
-        const newNote = resp.data.createNote;
+      ({ data }: { data: ApiTypes.CreateNoteMutation }) => {
+        const newNote = data.createNote;
         setNotes([...notes, newNote]);
         setNote('');
       }
     );
+  };
+
+  const handleDeleteNote = (noteId: string): void => {
+    const input = { id: noteId };
+    API.graphql(graphqlOperation(deleteNote, { input })).then((resp) => {
+      console.log('resp: ', resp);
+    });
   };
 
   return (
@@ -66,14 +63,19 @@ const _App: React.FC = () => {
 
         <div>
           {notes.map((note) => {
-            return (
-              <div key={note.id} className="flex items-center">
-                <li className="list pa1 f3">{note.note}</li>
-                <button className="bg-transparent bn f4">
-                  <span>&times;</span>
-                </button>
-              </div>
-            );
+            if (note) {
+              return (
+                <div key={note.id} className="flex items-center">
+                  <li className="list pa1 f3">{note.note}</li>
+                  <button
+                    className="bg-transparent bn f4"
+                    onClick={(): void => handleDeleteNote(note.id)}
+                  >
+                    <span>&times;</span>
+                  </button>
+                </div>
+              );
+            }
           })}
         </div>
       </Wrapper>
