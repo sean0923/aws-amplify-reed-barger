@@ -42,18 +42,18 @@ const _App: React.FC = () => {
     setNote(e.target.value);
   };
 
+  const hasExistingNote = (): boolean => {
+    if (selectedNoteId) {
+      const isId = notes.findIndex((note) => note.id === selectedNoteId) !== -1;
+      return isId;
+    }
+    return false;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    // create new note
-    if (selectedNoteId === '') {
-      const input = { note };
-      API.graphql(graphqlOperation(createNote, { input })).then((resp: CreateNoteResp) => {
-        const newNote = resp.data.createNote;
-        setNotes([...notes, newNote]);
-        setNote('');
-        setSelectedNoteId('');
-      });
-    } else {
+
+    if (hasExistingNote()) {
       // update exsiting note
       const id = selectedNoteId;
       const input = { id, note };
@@ -67,6 +67,15 @@ const _App: React.FC = () => {
         });
 
         setNotes(updatedNotes);
+        setNote('');
+        setSelectedNoteId('');
+      });
+    } else {
+      // create new note
+      const input = { note };
+      API.graphql(graphqlOperation(createNote, { input })).then((resp: CreateNoteResp) => {
+        const newNote = resp.data.createNote;
+        setNotes([...notes, newNote]);
         setNote('');
         setSelectedNoteId('');
       });
@@ -102,7 +111,7 @@ const _App: React.FC = () => {
             onChange={handleNoteChange}
           />
           <button type="submit" className="pa2 f4">
-            Add Note
+            {hasExistingNote() ? 'Update Note' : 'Add Note'}
           </button>
         </form>
 
