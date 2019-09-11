@@ -4,22 +4,11 @@ import styled from 'styled-components';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createNote, deleteNote, updateNote } from '../graphql/mutations';
 import { listNotes } from '../graphql/queries';
+import { onCreateNote, onUpdateNote, onDeleteNote } from '../graphql/subscriptions';
 
 interface Note {
   id: string;
   note: string;
-}
-
-interface CreateNoteResp {
-  data: { createNote: Note };
-}
-
-interface UpdateNoteResp {
-  data: { updateNote: Note };
-}
-
-interface DeleteNoteResp {
-  data: { deleteNote: Note };
 }
 
 interface ListNodeResp {
@@ -36,6 +25,63 @@ const _App: React.FC = () => {
       const notesFromDB = resp.data.listNotes.items;
       setNotes(notesFromDB);
     });
+  }, []);
+
+  React.useEffect(() => {
+    const createNoteListner = API.graphql(graphqlOperation(onCreateNote)).subscribe({
+      next: (resp) => {
+        const newNote = resp.value.data.onCreateNote;
+        setNotes((prevNotes) => {
+          return [...prevNotes, newNote];
+        });
+        setNote('');
+        setSelectedNoteId('');
+      },
+    });
+
+    return createNoteListner.unsubscribe;
+  }, []);
+
+  React.useEffect(() => {
+    const updateNoteListner = API.graphql(graphqlOperation(onUpdateNote)).subscribe({
+      next: (resp) => {
+        const updatedNote = resp.value.data.onUpdateNote;
+        setNotes((prevNotes) => {
+          const updatedNotes = prevNotes.map((prevNote) => {
+            if (updatedNote.id === prevNote.id) {
+              return updatedNote;
+            }
+            return prevNote;
+          });
+
+          return updatedNotes;
+        });
+        setNote('');
+        setSelectedNoteId('');
+      },
+    });
+
+    return updateNoteListner.unsubscribe;
+  }, []);
+
+  React.useEffect(() => {
+    const deleteNoteListner = API.graphql(graphqlOperation(onDeleteNote)).subscribe({
+      next: (resp) => {
+        const deletedNote = resp.value.data.onDeleteNote;
+        setNotes((prevNotes) => {
+          const notesWithoutDeletedNote = prevNotes.filter((note) => {
+            if (note.id === deletedNote.id) {
+              return false;
+            }
+            return true;
+          });
+
+          return notesWithoutDeletedNote;
+        });
+      },
+    });
+
+    return deleteNoteListner.unsubscribe;
   }, []);
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -57,40 +103,46 @@ const _App: React.FC = () => {
       // update exsiting note
       const id = selectedNoteId;
       const input = { id, note };
-      API.graphql(graphqlOperation(updateNote, { input })).then((resp: UpdateNoteResp) => {
-        const updatedNote = resp.data.updateNote;
-        const updatedNotes = notes.map((note) => {
-          if (note.id === updatedNote.id) {
-            return updatedNote;
-          }
-          return note;
-        });
+      API.graphql(graphqlOperation(updateNote, { input }));
 
-        setNotes(updatedNotes);
-        setNote('');
-        setSelectedNoteId('');
-      });
+      // .then((resp: UpdateNoteResp) => {
+      //   const updatedNote = resp.data.updateNote;
+      //   const updatedNotes = notes.map((note) => {
+      //     if (note.id === updatedNote.id) {
+      //       return updatedNote;
+      //     }
+      //     return note;
+      //   });
+
+      //   setNotes(updatedNotes);
+      //   setNote('');
+      //   setSelectedNoteId('');
+      // });
     } else {
       // create new note
       const input = { note };
-      API.graphql(graphqlOperation(createNote, { input })).then((resp: CreateNoteResp) => {
-        const newNote = resp.data.createNote;
-        setNotes([...notes, newNote]);
-        setNote('');
-        setSelectedNoteId('');
-      });
+      API.graphql(graphqlOperation(createNote, { input }));
+
+      // .then((resp: CreateNoteResp) => {
+      //   const newNote = resp.data.createNote;
+      //   setNotes([...notes, newNote]);
+      //   setNote('');
+      //   setSelectedNoteId('');
+      // });
     }
   };
 
   const handleDeleteNote = (noteId: string): void => {
     const input = { id: noteId };
-    API.graphql(graphqlOperation(deleteNote, { input })).then((resp: DeleteNoteResp) => {
-      const deletedNoteId = resp.data.deleteNote.id;
-      const filteredNotes = notes.filter((note) => {
-        return note.id !== deletedNoteId;
-      });
-      setNotes(filteredNotes);
-    });
+    API.graphql(graphqlOperation(deleteNote, { input }));
+
+    // .then((resp: DeleteNoteResp) => {
+    //   const deletedNoteId = resp.data.deleteNote.id;
+    //   const filteredNotes = notes.filter((note) => {
+    //     return note.id !== deletedNoteId;
+    //   });
+    //   setNotes(filteredNotes);
+    // });
   };
 
   const populateExsitingNoteToInputWhenClicked = ({ id, note }: Note): void => {
