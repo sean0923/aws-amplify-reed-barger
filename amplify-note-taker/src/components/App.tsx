@@ -3,21 +3,33 @@ import { withAuthenticator } from 'aws-amplify-react';
 import styled from 'styled-components';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createNote } from '../graphql/mutations';
+import { listNotes } from '../graphql/queries';
 
 interface Note {
   id: string;
   note: string;
 }
 
-interface RespFromCreateNote {
+interface RespFromCreateNoteMutation {
   data: {
     createNote: Note;
   };
 }
 
+interface RespFromListNotesQuery {
+  data: { listNotes: { items: Note[] } };
+}
+
 const _App: React.FC = () => {
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [note, setNote] = React.useState('');
+
+  React.useEffect(() => {
+    API.graphql(graphqlOperation(listNotes)).then((resp: RespFromListNotesQuery) => {
+      const notesFromDB = resp.data.listNotes.items;
+      setNotes(notesFromDB);
+    });
+  }, []);
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setNote(e.target.value);
@@ -26,11 +38,13 @@ const _App: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const input = { note };
-    API.graphql(graphqlOperation(createNote, { input })).then((resp: RespFromCreateNote) => {
-      const newNote = resp.data.createNote;
-      setNotes([...notes, newNote]);
-      setNote('');
-    });
+    API.graphql(graphqlOperation(createNote, { input })).then(
+      (resp: RespFromCreateNoteMutation) => {
+        const newNote = resp.data.createNote;
+        setNotes([...notes, newNote]);
+        setNote('');
+      }
+    );
   };
 
   return (
