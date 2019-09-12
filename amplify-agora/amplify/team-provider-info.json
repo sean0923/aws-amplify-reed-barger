@@ -1,0 +1,19 @@
+{
+    "env": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-agora-env-20190911120105-authRole",
+            "UnauthRoleArn": "arn:aws:iam::235941291634:role/amplify-agora-env-20190911120105-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::235941291634:role/amplify-agora-env-20190911120105-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-agora-env-20190911120105-deployment",
+            "UnauthRoleName": "amplify-agora-env-20190911120105-unauthRole",
+            "StackName": "amplify-agora-env-20190911120105",
+            "StackId": "arn:aws:cloudformation:us-east-1:235941291634:stack/amplify-agora-env-20190911120105/81cb0590-d4c6-11e9-98f4-0a8540e42a70"
+        },
+        "categories": {
+            "auth": {
+                "amplifyagora934fa9b5": {}
+            }
+        }
+    }
+}
