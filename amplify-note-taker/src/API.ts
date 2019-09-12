@@ -58,6 +58,7 @@ export type CreateNoteMutation = {
     __typename: 'Note';
     id: string;
     note: string;
+    owner: string | null;
   } | null;
 };
 
@@ -70,6 +71,7 @@ export type UpdateNoteMutation = {
     __typename: 'Note';
     id: string;
     note: string;
+    owner: string | null;
   } | null;
 };
 
@@ -82,6 +84,7 @@ export type DeleteNoteMutation = {
     __typename: 'Note';
     id: string;
     note: string;
+    owner: string | null;
   } | null;
 };
 
@@ -94,6 +97,7 @@ export type GetNoteQuery = {
     __typename: 'Note';
     id: string;
     note: string;
+    owner: string | null;
   } | null;
 };
 
@@ -110,9 +114,14 @@ export type ListNotesQuery = {
       __typename: 'Note';
       id: string;
       note: string;
+      owner: string | null;
     } | null> | null;
     nextToken: string | null;
   } | null;
+};
+
+export type OnCreateNoteSubscriptionVariables = {
+  owner: string;
 };
 
 export type OnCreateNoteSubscription = {
@@ -120,7 +129,12 @@ export type OnCreateNoteSubscription = {
     __typename: 'Note';
     id: string;
     note: string;
+    owner: string | null;
   } | null;
+};
+
+export type OnUpdateNoteSubscriptionVariables = {
+  owner: string;
 };
 
 export type OnUpdateNoteSubscription = {
@@ -128,7 +142,12 @@ export type OnUpdateNoteSubscription = {
     __typename: 'Note';
     id: string;
     note: string;
+    owner: string | null;
   } | null;
+};
+
+export type OnDeleteNoteSubscriptionVariables = {
+  owner: string;
 };
 
 export type OnDeleteNoteSubscription = {
@@ -136,11 +155,6 @@ export type OnDeleteNoteSubscription = {
     __typename: 'Note';
     id: string;
     note: string;
+    owner: string | null;
   } | null;
 };
-
-export type Note = {
-  __typename: 'Note';
-  id: string;
-  note: string;
-} | null;

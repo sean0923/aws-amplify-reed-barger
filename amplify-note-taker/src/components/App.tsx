@@ -15,7 +15,13 @@ interface ListNodeResp {
   data: { listNotes: { items: Note[] } };
 }
 
-const _App: React.FC = () => {
+interface Props {
+  authData: { username: string };
+}
+
+const _App: React.FC<Props> = ({ authData }) => {
+  const owner = authData.username;
+
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [note, setNote] = React.useState('');
   const [selectedNoteId, setSelectedNoteId] = React.useState('');
@@ -28,7 +34,7 @@ const _App: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-    const createNoteListner = API.graphql(graphqlOperation(onCreateNote)).subscribe({
+    const createNoteListner = API.graphql(graphqlOperation(onCreateNote, { owner })).subscribe({
       next: (resp) => {
         const newNote = resp.value.data.onCreateNote;
         setNotes((prevNotes) => {
@@ -40,10 +46,10 @@ const _App: React.FC = () => {
     });
 
     return createNoteListner.unsubscribe;
-  }, []);
+  }, [owner]);
 
   React.useEffect(() => {
-    const updateNoteListner = API.graphql(graphqlOperation(onUpdateNote)).subscribe({
+    const updateNoteListner = API.graphql(graphqlOperation(onUpdateNote, { owner })).subscribe({
       next: (resp) => {
         const updatedNote = resp.value.data.onUpdateNote;
         setNotes((prevNotes) => {
@@ -62,10 +68,10 @@ const _App: React.FC = () => {
     });
 
     return updateNoteListner.unsubscribe;
-  }, []);
+  }, [owner]);
 
   React.useEffect(() => {
-    const deleteNoteListner = API.graphql(graphqlOperation(onDeleteNote)).subscribe({
+    const deleteNoteListner = API.graphql(graphqlOperation(onDeleteNote, { owner })).subscribe({
       next: (resp) => {
         const deletedNote = resp.value.data.onDeleteNote;
         setNotes((prevNotes) => {
@@ -82,7 +88,7 @@ const _App: React.FC = () => {
     });
 
     return deleteNoteListner.unsubscribe;
-  }, []);
+  }, [owner]);
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setNote(e.target.value);
