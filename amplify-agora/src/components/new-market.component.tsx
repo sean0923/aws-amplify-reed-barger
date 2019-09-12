@@ -64,14 +64,14 @@ const NewMarket: React.FC = () => {
       });
   };
 
-  const onSearch = (query: any) => {
-    const fullOptions = convertTagsToOptions(tags);
-    const filteredOptions = fullOptions.filter(({ label }) => {
-      return label.toLowerCase().includes(query.toLowerCase());
-    });
+  // const onSearch = (query: any) => {
+  //   const fullOptions = convertTagsToOptions(tags);
+  //   const filteredOptions = fullOptions.filter(({ label }) => {
+  //     return label.toLowerCase().includes(query.toLowerCase());
+  //   });
 
-    setOptions(filteredOptions);
-  };
+  //   setOptions(filteredOptions);
+  // };
 
   return (
     <>
@@ -116,8 +116,8 @@ const NewMarket: React.FC = () => {
                 onChange={(selectedTags) => {
                   setSelectedTags(selectedTags);
                 }}
-                remoteMethod={onSearch}
-                remote={true}
+                // remoteMethod={onSearch}
+                // remote={true}
               >
                 {options.map((option) => {
                   return (
