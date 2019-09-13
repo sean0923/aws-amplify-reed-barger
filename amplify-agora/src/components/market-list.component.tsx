@@ -10,10 +10,30 @@ import * as ApiTypes from '../API';
 import { Link } from 'react-router-dom';
 
 import * as utils from '../utils/utils';
+import { onCreateMarket } from '../graphql/subscriptions';
 
 const MarketList = () => {
+  const onNewData = (
+    prevData: ApiTypes.ListMarketsQuery,
+    newData: ApiTypes.OnCreateMarketSubscription
+  ) => {
+    if (!prevData.listMarkets) return;
+    if (!prevData.listMarkets.items) return;
+
+    const updatedData = {
+      ...prevData,
+      listMarkets: { items: [newData.onCreateMarket, ...prevData.listMarkets.items] },
+    };
+
+    return updatedData;
+  };
+
   return (
-    <Connect query={graphqlOperation(listMarkets)}>
+    <Connect
+      query={graphqlOperation(listMarkets)}
+      subscription={graphqlOperation(onCreateMarket)}
+      onSubscriptionMsg={onNewData}
+    >
       {({
         data,
         loading,

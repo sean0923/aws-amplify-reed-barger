@@ -15,7 +15,21 @@ const convertTagsToOptions = (tags: string[]) => {
   });
 };
 
-const NewMarket: React.FC = () => {
+interface Props {
+  isSearching: boolean;
+  searchTerm: string;
+  handleSearchChange: (searchTerm: string) => void;
+  clearSearch: () => void;
+  handleSearch: (e: any) => void;
+}
+
+const NewMarket: React.FC<Props> = ({
+  isSearching,
+  searchTerm,
+  handleSearchChange,
+  handleSearch,
+  clearSearch,
+}) => {
   const { auth } = React.useContext(AuthContext);
   const [isDialogVisible, setIsDialogVisible] = React.useState(false);
   const [marketName, setMarketName] = React.useState('');
@@ -49,7 +63,7 @@ const NewMarket: React.FC = () => {
           Notification.success({
             title: 'Success',
             message: `Successfully create market: ${data.createMarket.name}`,
-            duration: 1000,
+            duration: 2000,
           });
         }
       })
@@ -87,6 +101,23 @@ const NewMarket: React.FC = () => {
             }}
           />
         </h1>
+
+        <Form inline={true}>
+          <Form.Item>
+            <Input
+              value={searchTerm}
+              placeholder="Search Markets..."
+              icon="circle-cross"
+              onChange={handleSearchChange}
+              onIconClick={clearSearch}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="info" icon="search" onClick={handleSearch} loading={isSearching}>
+              Search
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
 
       <Dialog
