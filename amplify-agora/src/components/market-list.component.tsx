@@ -39,11 +39,9 @@ const MarketList = () => {
               Markets
             </h2>
             {data.listMarkets.items.map((market) => {
-              if (!market) {
-                return null;
-              }
-
-              console.log('market.products: ', market.products);
+              if (!market) return null;
+              if (!market.products) return null;
+              if (!market.products.items) return null;
 
               return (
                 <div className="my-2" key={market.id}>
@@ -60,7 +58,9 @@ const MarketList = () => {
                         <Link to={`/markets/${2}`} className="link">
                           {market.name}
                         </Link>
-                        <span style={{ color: 'var(--darkAmazonOrange)' }}>999</span>
+                        <span style={{ color: 'var(--darkAmazonOrange)' }}>
+                          {market.products.items.length}
+                        </span>
                         <img src={utils.getIconUrl('shopping_cart', 'f60')} alt="Shopping Cart" />
                       </span>
                       <div style={{ color: 'var(--lightSquidInk)' }}>{market.owner}</div>

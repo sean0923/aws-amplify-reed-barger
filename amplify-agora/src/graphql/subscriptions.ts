@@ -11,6 +11,18 @@ export const onCreateMarket = `subscription OnCreateMarket {
       items {
         id
         description
+        market {
+          id
+          name
+          tags
+          owner
+          createdAt
+        }
+        file {
+          bucket
+          region
+          key
+        }
         price
         shipped
         owner
@@ -32,6 +44,18 @@ export const onUpdateMarket = `subscription OnUpdateMarket {
       items {
         id
         description
+        market {
+          id
+          name
+          tags
+          owner
+          createdAt
+        }
+        file {
+          bucket
+          region
+          key
+        }
         price
         shipped
         owner
@@ -53,6 +77,18 @@ export const onDeleteMarket = `subscription OnDeleteMarket {
       items {
         id
         description
+        market {
+          id
+          name
+          tags
+          owner
+          createdAt
+        }
+        file {
+          bucket
+          region
+          key
+        }
         price
         shipped
         owner
@@ -74,6 +110,14 @@ export const onCreateProduct = `subscription OnCreateProduct($owner: String!) {
       tags
       owner
       products {
+        items {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
         nextToken
       }
       createdAt
@@ -100,6 +144,14 @@ export const onUpdateProduct = `subscription OnUpdateProduct($owner: String!) {
       tags
       owner
       products {
+        items {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
         nextToken
       }
       createdAt
@@ -126,6 +178,14 @@ export const onDeleteProduct = `subscription OnDeleteProduct($owner: String!) {
       tags
       owner
       products {
+        items {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
         nextToken
       }
       createdAt

@@ -11,6 +11,18 @@ export const createMarket = `mutation CreateMarket($input: CreateMarketInput!) {
       items {
         id
         description
+        market {
+          id
+          name
+          tags
+          owner
+          createdAt
+        }
+        file {
+          bucket
+          region
+          key
+        }
         price
         shipped
         owner
@@ -32,6 +44,18 @@ export const updateMarket = `mutation UpdateMarket($input: UpdateMarketInput!) {
       items {
         id
         description
+        market {
+          id
+          name
+          tags
+          owner
+          createdAt
+        }
+        file {
+          bucket
+          region
+          key
+        }
         price
         shipped
         owner
@@ -53,6 +77,18 @@ export const deleteMarket = `mutation DeleteMarket($input: DeleteMarketInput!) {
       items {
         id
         description
+        market {
+          id
+          name
+          tags
+          owner
+          createdAt
+        }
+        file {
+          bucket
+          region
+          key
+        }
         price
         shipped
         owner
@@ -74,6 +110,14 @@ export const createProduct = `mutation CreateProduct($input: CreateProductInput!
       tags
       owner
       products {
+        items {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
         nextToken
       }
       createdAt
@@ -100,6 +144,14 @@ export const updateProduct = `mutation UpdateProduct($input: UpdateProductInput!
       tags
       owner
       products {
+        items {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
         nextToken
       }
       createdAt
@@ -126,6 +178,14 @@ export const deleteProduct = `mutation DeleteProduct($input: DeleteProductInput!
       tags
       owner
       products {
+        items {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
         nextToken
       }
       createdAt
@@ -151,6 +211,27 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     orders {
       items {
         id
+        product {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
+        user {
+          id
+          username
+          email
+          registered
+        }
+        shippingAddress {
+          city
+          country
+          address_line1
+          address_state
+          address_zip
+        }
         createdAt
       }
       nextToken
@@ -167,6 +248,27 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     orders {
       items {
         id
+        product {
+          id
+          description
+          price
+          shipped
+          owner
+          createdAt
+        }
+        user {
+          id
+          username
+          email
+          registered
+        }
+        shippingAddress {
+          city
+          country
+          address_line1
+          address_state
+          address_zip
+        }
         createdAt
       }
       nextToken
@@ -185,6 +287,9 @@ export const createOrder = `mutation CreateOrder($input: CreateOrderInput!) {
         name
         tags
         owner
+        products {
+          nextToken
+        }
         createdAt
       }
       file {
@@ -203,6 +308,10 @@ export const createOrder = `mutation CreateOrder($input: CreateOrderInput!) {
       email
       registered
       orders {
+        items {
+          id
+          createdAt
+        }
         nextToken
       }
     }
