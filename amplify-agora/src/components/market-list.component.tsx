@@ -78,6 +78,7 @@ const MarketList: React.FC<Props> = ({ searchResults, searchTerm }) => {
               if (!market) return null;
               if (!market.products) return null;
               if (!market.products.items) return null;
+              console.log('market.id: ', market.id);
 
               return (
                 <div className="my-2" key={market.id}>
@@ -91,7 +92,7 @@ const MarketList: React.FC<Props> = ({ searchResults, searchTerm }) => {
                   >
                     <div>
                       <span className="flex">
-                        <Link to={`/markets/${2}`} className="link">
+                        <Link to={`/markets/${market.id}`} className="link">
                           {market.name}
                           {/* {market.createdAt} */}
                         </Link>
