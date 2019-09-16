@@ -18,3 +18,18 @@ Amplify.configure(aws_exports);
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // c1346353@urhen.com
+
+// {
+//   searchMarkets(filter: {
+//     or:[
+//       {name:{match: "a"}}
+//     ]
+//   }, sort:{
+//     field: createdAt
+    
+//   }){
+//     items{
+//       name
+//     }
+//   }
+// }

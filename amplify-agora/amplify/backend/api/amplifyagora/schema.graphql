@@ -1,27 +1,16 @@
-# @connection to connect diff types
-# @connection(name: "") name to differentiate among other connection
-# unnamed @connection -> ex) Product does not need to know about order
-
-# @searchable enable elastic search
-
 type Market @model @searchable {
   id: ID!
   name: String!
+  products: [Product] @connection(name: "MarketProducts", sortField: "createdAt")
   tags: [String]
   owner: String!
-  products: [Product] @connection(name: "MarketProducts", sortField: "createdAt")
   createdAt: String
 }
 
-# by default identityField = "username" of the owner of the product
-# we are changing to identityField: "sub" (user's uniq id) so that we can easily query for user's(owner's) information
-
-# ifyou don't like the key "owner" you can change it by using ownerField
-# type Product @auth(rules: [{ allow: owner, identityField: "sub", ownerField: "seller" }]) {
 type Product @model @auth(rules: [{ allow: owner, identityField: "sub" }]) {
   id: ID!
   description: String!
-  market: Market @connection(name: "MarketProducts")
+  market: Market @connection(name: "MarketProducts", sortField: "createdAt")
   file: S3Object!
   price: Float!
   shipped: Boolean!
@@ -35,11 +24,10 @@ type S3Object {
   key: String!
 }
 
-# Instead of setting auth we can limit queries, mutations, subscriptions
 type User
   @model(
     queries: { get: "getUser" }
-    mutations: { create: "createUser", update: "updateUser" }
+    mutations: { create: "registerUser", update: "updateUser" }
     subscriptions: null
   ) {
   id: ID!

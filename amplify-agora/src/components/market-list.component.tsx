@@ -12,7 +12,12 @@ import { Link } from 'react-router-dom';
 import * as utils from '../utils/utils';
 import { onCreateMarket } from '../graphql/subscriptions';
 
-const MarketList = () => {
+interface Props {
+  searchResults: any;
+  searchTerm: string;
+}
+
+const MarketList: React.FC<Props> = ({ searchResults, searchTerm }) => {
   const onNewData = (
     prevData: ApiTypes.ListMarketsQuery,
     newData: ApiTypes.OnCreateMarketSubscription
@@ -48,17 +53,28 @@ const MarketList = () => {
         if (!data.listMarkets) return <Error errors={errors} />;
         if (!data.listMarkets.items) return <Error errors={errors} />;
 
+        const shouldDisplaySearchResults = searchResults.length !== 0;
+        const marketData = shouldDisplaySearchResults ? searchResults : data.listMarkets.items;
+
         return (
           <>
-            <h2 className="header">
-              <img
-                src={utils.getIconUrl('store_mall_directory', '527FFF')}
-                alt="store_mall_directory"
-                className="large-icon"
-              />
-              Markets
-            </h2>
-            {data.listMarkets.items.map((market) => {
+            {shouldDisplaySearchResults ? (
+              <h2 className="text-green">
+                <Icon name="check" className="icon" />
+                {searchResults.length} Results
+              </h2>
+            ) : (
+              <h2 className="header">
+                <img
+                  src={utils.getIconUrl('store_mall_directory', '527FFF')}
+                  alt="store_mall_directory"
+                  className="large-icon"
+                />
+                Markets
+              </h2>
+            )}
+
+            {marketData.map((market: any) => {
               if (!market) return null;
               if (!market.products) return null;
               if (!market.products.items) return null;
@@ -77,6 +93,7 @@ const MarketList = () => {
                       <span className="flex">
                         <Link to={`/markets/${2}`} className="link">
                           {market.name}
+                          {/* {market.createdAt} */}
                         </Link>
                         <span style={{ color: 'var(--darkAmazonOrange)' }}>
                           {market.products.items.length}
@@ -87,7 +104,7 @@ const MarketList = () => {
                     </div>
                     <div>
                       {market.tags &&
-                        market.tags.map((tag) => {
+                        market.tags.map((tag: any) => {
                           if (!tag) return null;
 
                           return (

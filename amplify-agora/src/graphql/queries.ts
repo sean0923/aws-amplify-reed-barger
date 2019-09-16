@@ -5,8 +5,6 @@ export const getMarket = `query GetMarket($id: ID!) {
   getMarket(id: $id) {
     id
     name
-    tags
-    owner
     products {
       items {
         id
@@ -30,6 +28,8 @@ export const getMarket = `query GetMarket($id: ID!) {
       }
       nextToken
     }
+    tags
+    owner
     createdAt
   }
 }
@@ -43,8 +43,6 @@ export const listMarkets = `query ListMarkets(
     items {
       id
       name
-      tags
-      owner
       products {
         items {
           id
@@ -56,6 +54,8 @@ export const listMarkets = `query ListMarkets(
         }
         nextToken
       }
+      tags
+      owner
       createdAt
     }
     nextToken
@@ -69,8 +69,6 @@ export const getProduct = `query GetProduct($id: ID!) {
     market {
       id
       name
-      tags
-      owner
       products {
         items {
           id
@@ -82,6 +80,8 @@ export const getProduct = `query GetProduct($id: ID!) {
         }
         nextToken
       }
+      tags
+      owner
       createdAt
     }
     file {
@@ -108,11 +108,11 @@ export const listProducts = `query ListProducts(
       market {
         id
         name
-        tags
-        owner
         products {
           nextToken
         }
+        tags
+        owner
         createdAt
       }
       file {
@@ -181,8 +181,6 @@ export const searchMarkets = `query SearchMarkets(
     items {
       id
       name
-      tags
-      owner
       products {
         items {
           id
@@ -194,6 +192,8 @@ export const searchMarkets = `query SearchMarkets(
         }
         nextToken
       }
+      tags
+      owner
       createdAt
     }
     nextToken

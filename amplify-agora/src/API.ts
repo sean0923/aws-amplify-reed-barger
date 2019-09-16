@@ -213,8 +213,6 @@ export type CreateMarketMutation = {
     __typename: "Market",
     id: string,
     name: string,
-    tags: Array< string | null > | null,
-    owner: string,
     products:  {
       __typename: "ModelProductConnection",
       items:  Array< {
@@ -242,6 +240,8 @@ export type CreateMarketMutation = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tags: Array< string | null > | null,
+    owner: string,
     createdAt: string | null,
   } | null,
 };
@@ -255,8 +255,6 @@ export type UpdateMarketMutation = {
     __typename: "Market",
     id: string,
     name: string,
-    tags: Array< string | null > | null,
-    owner: string,
     products:  {
       __typename: "ModelProductConnection",
       items:  Array< {
@@ -284,6 +282,8 @@ export type UpdateMarketMutation = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tags: Array< string | null > | null,
+    owner: string,
     createdAt: string | null,
   } | null,
 };
@@ -297,8 +297,6 @@ export type DeleteMarketMutation = {
     __typename: "Market",
     id: string,
     name: string,
-    tags: Array< string | null > | null,
-    owner: string,
     products:  {
       __typename: "ModelProductConnection",
       items:  Array< {
@@ -326,6 +324,8 @@ export type DeleteMarketMutation = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tags: Array< string | null > | null,
+    owner: string,
     createdAt: string | null,
   } | null,
 };
@@ -343,8 +343,6 @@ export type CreateProductMutation = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -358,6 +356,8 @@ export type CreateProductMutation = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null,
     file:  {
@@ -386,8 +386,6 @@ export type UpdateProductMutation = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -401,6 +399,8 @@ export type UpdateProductMutation = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null,
     file:  {
@@ -429,8 +429,6 @@ export type DeleteProductMutation = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -444,6 +442,8 @@ export type DeleteProductMutation = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null,
     file:  {
@@ -459,12 +459,12 @@ export type DeleteProductMutation = {
   } | null,
 };
 
-export type CreateUserMutationVariables = {
+export type RegisterUserMutationVariables = {
   input: CreateUserInput,
 };
 
-export type CreateUserMutation = {
-  createUser:  {
+export type RegisterUserMutation = {
+  registerUser:  {
     __typename: "User",
     id: string,
     username: string,
@@ -569,12 +569,12 @@ export type CreateOrderMutation = {
         __typename: "Market",
         id: string,
         name: string,
-        tags: Array< string | null > | null,
-        owner: string,
         products:  {
           __typename: "ModelProductConnection",
           nextToken: string | null,
         } | null,
+        tags: Array< string | null > | null,
+        owner: string,
         createdAt: string | null,
       } | null,
       file:  {
@@ -625,8 +625,6 @@ export type GetMarketQuery = {
     __typename: "Market",
     id: string,
     name: string,
-    tags: Array< string | null > | null,
-    owner: string,
     products:  {
       __typename: "ModelProductConnection",
       items:  Array< {
@@ -654,6 +652,8 @@ export type GetMarketQuery = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tags: Array< string | null > | null,
+    owner: string,
     createdAt: string | null,
   } | null,
 };
@@ -671,8 +671,6 @@ export type ListMarketsQuery = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -686,6 +684,8 @@ export type ListMarketsQuery = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null > | null,
     nextToken: string | null,
@@ -705,8 +705,6 @@ export type GetProductQuery = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -720,6 +718,8 @@ export type GetProductQuery = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null,
     file:  {
@@ -752,12 +752,12 @@ export type ListProductsQuery = {
         __typename: "Market",
         id: string,
         name: string,
-        tags: Array< string | null > | null,
-        owner: string,
         products:  {
           __typename: "ModelProductConnection",
           nextToken: string | null,
         } | null,
+        tags: Array< string | null > | null,
+        owner: string,
         createdAt: string | null,
       } | null,
       file:  {
@@ -836,8 +836,6 @@ export type SearchMarketsQuery = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -851,6 +849,8 @@ export type SearchMarketsQuery = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null > | null,
     nextToken: string | null,
@@ -862,8 +862,6 @@ export type OnCreateMarketSubscription = {
     __typename: "Market",
     id: string,
     name: string,
-    tags: Array< string | null > | null,
-    owner: string,
     products:  {
       __typename: "ModelProductConnection",
       items:  Array< {
@@ -891,6 +889,8 @@ export type OnCreateMarketSubscription = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tags: Array< string | null > | null,
+    owner: string,
     createdAt: string | null,
   } | null,
 };
@@ -900,8 +900,6 @@ export type OnUpdateMarketSubscription = {
     __typename: "Market",
     id: string,
     name: string,
-    tags: Array< string | null > | null,
-    owner: string,
     products:  {
       __typename: "ModelProductConnection",
       items:  Array< {
@@ -929,6 +927,8 @@ export type OnUpdateMarketSubscription = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tags: Array< string | null > | null,
+    owner: string,
     createdAt: string | null,
   } | null,
 };
@@ -938,8 +938,6 @@ export type OnDeleteMarketSubscription = {
     __typename: "Market",
     id: string,
     name: string,
-    tags: Array< string | null > | null,
-    owner: string,
     products:  {
       __typename: "ModelProductConnection",
       items:  Array< {
@@ -967,6 +965,8 @@ export type OnDeleteMarketSubscription = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tags: Array< string | null > | null,
+    owner: string,
     createdAt: string | null,
   } | null,
 };
@@ -984,8 +984,6 @@ export type OnCreateProductSubscription = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -999,6 +997,8 @@ export type OnCreateProductSubscription = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null,
     file:  {
@@ -1027,8 +1027,6 @@ export type OnUpdateProductSubscription = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -1042,6 +1040,8 @@ export type OnUpdateProductSubscription = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null,
     file:  {
@@ -1070,8 +1070,6 @@ export type OnDeleteProductSubscription = {
       __typename: "Market",
       id: string,
       name: string,
-      tags: Array< string | null > | null,
-      owner: string,
       products:  {
         __typename: "ModelProductConnection",
         items:  Array< {
@@ -1085,6 +1083,8 @@ export type OnDeleteProductSubscription = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tags: Array< string | null > | null,
+      owner: string,
       createdAt: string | null,
     } | null,
     file:  {

@@ -5,8 +5,6 @@ export const onCreateMarket = `subscription OnCreateMarket {
   onCreateMarket {
     id
     name
-    tags
-    owner
     products {
       items {
         id
@@ -30,6 +28,8 @@ export const onCreateMarket = `subscription OnCreateMarket {
       }
       nextToken
     }
+    tags
+    owner
     createdAt
   }
 }
@@ -38,8 +38,6 @@ export const onUpdateMarket = `subscription OnUpdateMarket {
   onUpdateMarket {
     id
     name
-    tags
-    owner
     products {
       items {
         id
@@ -63,6 +61,8 @@ export const onUpdateMarket = `subscription OnUpdateMarket {
       }
       nextToken
     }
+    tags
+    owner
     createdAt
   }
 }
@@ -71,8 +71,6 @@ export const onDeleteMarket = `subscription OnDeleteMarket {
   onDeleteMarket {
     id
     name
-    tags
-    owner
     products {
       items {
         id
@@ -96,6 +94,8 @@ export const onDeleteMarket = `subscription OnDeleteMarket {
       }
       nextToken
     }
+    tags
+    owner
     createdAt
   }
 }
@@ -107,8 +107,6 @@ export const onCreateProduct = `subscription OnCreateProduct($owner: String!) {
     market {
       id
       name
-      tags
-      owner
       products {
         items {
           id
@@ -120,6 +118,8 @@ export const onCreateProduct = `subscription OnCreateProduct($owner: String!) {
         }
         nextToken
       }
+      tags
+      owner
       createdAt
     }
     file {
@@ -141,8 +141,6 @@ export const onUpdateProduct = `subscription OnUpdateProduct($owner: String!) {
     market {
       id
       name
-      tags
-      owner
       products {
         items {
           id
@@ -154,6 +152,8 @@ export const onUpdateProduct = `subscription OnUpdateProduct($owner: String!) {
         }
         nextToken
       }
+      tags
+      owner
       createdAt
     }
     file {
@@ -175,8 +175,6 @@ export const onDeleteProduct = `subscription OnDeleteProduct($owner: String!) {
     market {
       id
       name
-      tags
-      owner
       products {
         items {
           id
@@ -188,6 +186,8 @@ export const onDeleteProduct = `subscription OnDeleteProduct($owner: String!) {
         }
         nextToken
       }
+      tags
+      owner
       createdAt
     }
     file {
