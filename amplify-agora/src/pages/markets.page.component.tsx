@@ -93,7 +93,7 @@ const MarketsPage: React.FC<Props> = ({ match }) => {
             }
             name="1"
           >
-            <NewProduct />
+            <NewProduct marketId={marketId} />
           </Tabs.Pane>
         )}
         {/* Products List */}
