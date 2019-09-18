@@ -25,6 +25,63 @@ const NewProduct: React.FC<Props> = ({ marketId }) => {
   const [imagePreview, setImagePrivew] = React.useState('');
   const [imgFile, setImgFile] = React.useState<ImgFile | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
+  const [percentUploaded, setPercentUploaded] = React.useState(0);
+
+  const initializeInputs = () => {
+    setDescription('');
+    setPrice('');
+    setIsShipped(false);
+    setImagePrivew('');
+    setImgFile(null);
+  };
+
+  const handleSubmit = async () => {
+    if (!imgFile) return;
+    const visibility = 'public';
+    const { identityId } = await Auth.currentCredentials();
+    const filename = `/${visibility}/${identityId}/${Date.now()}-${imgFile.name}`;
+    setIsUploading(true);
+
+    try {
+      const uploadedFile: any = await Storage.put(filename, imgFile.file, {
+        contentType: imgFile.type,
+        progressCallback: (progress: any) => {
+          console.log('progress: ', progress.loaded, progress.total);
+          const percentUploaded = Math.round((progress.loaded / progress.total) * 100);
+          setPercentUploaded(percentUploaded);
+        },
+      });
+
+      const file = {
+        key: uploadedFile.key,
+        bucket: aws_exports.aws_user_files_s3_bucket,
+        region: aws_exports.aws_project_region,
+      };
+
+      const input = {
+        productMarketId: marketId,
+        description,
+        shipped: isShipped,
+        price: convertDollarsToCents(parseFloat(price)),
+        file,
+      };
+
+      await API.graphql(graphqlOperation(createProduct, { input }));
+
+      Notification({
+        title: 'Success',
+        message: 'Product successfully created',
+        type: 'success',
+      });
+
+      setIsUploading(false);
+      initializeInputs();
+    } catch (err) {
+      setIsUploading(false);
+      initializeInputs();
+      console.error('Error adding product', err);
+    }
+  };
 
   return (
     <div className="flex-center">
@@ -69,7 +126,9 @@ const NewProduct: React.FC<Props> = ({ marketId }) => {
               </Radio>
             </div>
           </Form.Item>
-
+          {percentUploaded > 0 && (
+            <Progress type="circle" className="progress" percentage={percentUploaded} />
+          )}
           {imagePreview && (
             <img src={imagePreview} alt="Product  Preview" className="image-preview" />
           )}
@@ -82,59 +141,12 @@ const NewProduct: React.FC<Props> = ({ marketId }) => {
               photoPickerButton: { display: 'none' },
             }}
           />
-
           <Form.Item>
             <Button
               type="primary"
               disabled={!description || !price || !imagePreview || isUploading}
               loading={isUploading}
-              onClick={async () => {
-                if (!imgFile) return;
-                try {
-                  const visibility = 'public';
-
-                  const { identityId } = await Auth.currentCredentials();
-                  const filename = `${identityId}/${Date.now()}-${imgFile.name}`;
-                  console.log('filename: ', filename);
-                  console.log('imgFile: ', imgFile);
-                  const uploadedFile: any = await Storage.put(filename, imgFile, {
-                    contentType: imgFile.type,
-                  });
-
-                  const file = {
-                    key: uploadedFile.key,
-                    bucket: aws_exports.aws_user_files_s3_bucket,
-                    region: aws_exports.aws_project_region,
-                  };
-                  console.log('file: ', file);
-
-                  const input = {
-                    productMarketId: marketId,
-                    description,
-                    shipped: isShipped,
-                    price: convertDollarsToCents(parseFloat(price)),
-                    file,
-                  };
-
-                  const result = await API.graphql(graphqlOperation(createProduct, { input }));
-                  console.log('result: ', result);
-                  Notification({
-                    title: 'Success',
-                    message: 'Product successfully created',
-                    type: 'success',
-                  });
-
-                  setIsUploading(true);
-
-                  setDescription('');
-                  setPrice('');
-                  setIsShipped(false);
-                  setImagePrivew('');
-                  setImgFile(null);
-                } catch (err) {
-                  console.error('Error adding product', err);
-                }
-              }}
+              onClick={handleSubmit}
             >
               Add Product
             </Button>

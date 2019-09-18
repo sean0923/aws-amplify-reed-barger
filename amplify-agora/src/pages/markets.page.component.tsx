@@ -108,8 +108,8 @@ const MarketsPage: React.FC<Props> = ({ match }) => {
         >
           {
             <div className="product-list">
-              {marketData.products.items.map((product: any) => {
-                return <Product product={product} />;
+              {marketData.products.items.map((product: any, idx: any) => {
+                return <Product key={idx} product={product} />;
               })}
             </div>
           }
