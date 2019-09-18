@@ -3,7 +3,10 @@ import { Authenticator } from 'aws-amplify-react';
 import { Hub, Auth, Logger } from 'aws-amplify';
 
 interface AuthContextProps {
-  auth: { username: string };
+  auth: {
+    username: string;
+    attributes: { sub: string };
+  };
 }
 export const AuthContext = React.createContext<AuthContextProps>({} as AuthContextProps);
 
