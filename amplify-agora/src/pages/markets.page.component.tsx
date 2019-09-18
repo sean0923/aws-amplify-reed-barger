@@ -8,39 +8,6 @@ import { AuthContext } from '../context/auth/auth.context';
 import NewProduct from '../components/new-product.component';
 import Product from '../components/product.component';
 
-// export const getMarket = `query GetMarket($id: ID!) {
-//   getMarket(id: $id) {
-//     id
-//     name
-//     products {
-//       items {
-//         id
-//         description
-//         market {
-//           id
-//           name
-//           tags
-//           owner
-//           createdAt
-//         }
-//         file {
-//           bucket
-//           region
-//           key
-//         }
-//         price
-//         shipped
-//         owner
-//         createdAt
-//       }
-//       nextToken
-//     }
-//     tags
-//     owner
-//     createdAt
-//   }
-// }
-// `;
 interface MatchParams {
   marketId: string;
 }
