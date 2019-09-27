@@ -3,6 +3,7 @@ import { Loading, Tabs, Icon } from 'element-react';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import { getMarket } from '../graphql/queries';
+import { onDeleteProduct, onCreateProduct, onUpdateProduct } from '../graphql/subscriptions';
 import * as ApiTypes from '../API';
 import { AuthContext } from '../context/auth/auth.context';
 import NewProduct from '../components/new-product.component';
@@ -17,6 +18,7 @@ interface Props extends RouteComponentProps<MatchParams> {}
 const MarketsPage: React.FC<Props> = ({ match }) => {
   const { marketId } = match.params;
   const { auth } = React.useContext(AuthContext);
+  const owner = auth.username;
   const [marketData, setMarketData] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   // 3d5b53dd-8205-4fd2-bdf1-9405caf151e8
@@ -51,6 +53,51 @@ const MarketsPage: React.FC<Props> = ({ match }) => {
     };
   }, [marketId]);
 
+  // React.useEffect(() => {
+  //   const createProductListener = API.graphql(graphqlOperation(onCreateProduct)).subscribe({
+  //     next: (productData: any) => {
+  //       const createdProduct = productData.value.data.onCreateProduct;
+  //       const prevProducts = marketData.products.items.filter(
+  //         (item: any) => item.id !== createdProduct.id
+  //       );
+
+  //       const updatedProducts = [createdProduct, ...prevProducts];
+  //       const market = { ...marketData };
+  //       market.products.items = updatedProducts;
+  //       setMarketData(market);
+  //     },
+  //   });
+
+  //   return createProductListener;
+  // }, [marketData]);
+
+  React.useEffect(() => {
+    const updateProductListner = API.graphql(
+      graphqlOperation(onUpdateProduct, { owner })
+    ).subscribe({
+      next: (productData: any) => {
+        const updatedProduct = productData.value.data.onUpdateProduct;
+        const updatedProductIndex = marketData.products.items.findIndex(
+          (item: any) => item.id === updatedProduct.id
+        );
+
+        const updatedProducts = [
+          ...marketData.products.items.slice(0, updatedProductIndex),
+          updatedProduct,
+          ...marketData.products.items.slice(updatedProductIndex + 1),
+        ];
+        const market = { ...marketData };
+        market.products.items = updatedProducts;
+        console.log('updatedProducts: ', updatedProducts);
+        setMarketData(market);
+      },
+    });
+
+    return () => {
+      updateProductListner.unsubscribe();
+    };
+  }, [marketData]);
+
   if (isLoading && !marketData) {
     return <Loading fullscreen />;
   }
@@ -81,6 +128,7 @@ const MarketsPage: React.FC<Props> = ({ match }) => {
           {marketData.createdAt}
         </span>
       </div>
+
       {/* New Proudct */}
       <Tabs type="border-card" value={isMarketOwner ? '1' : '2'}>
         {isMarketOwner && (
@@ -96,6 +144,7 @@ const MarketsPage: React.FC<Props> = ({ match }) => {
             <NewProduct marketId={marketId} />
           </Tabs.Pane>
         )}
+
         {/* Products List */}
         <Tabs.Pane
           label={
@@ -118,4 +167,5 @@ const MarketsPage: React.FC<Props> = ({ match }) => {
     </div>
   );
 };
+
 export default MarketsPage;
