@@ -2,12 +2,12 @@ import React from 'react';
 import { S3Image } from 'aws-amplify-react';
 import { getIconUrl, convertCentsToDollars } from '../utils/utils';
 
-import { Notification, Popover, Button, Dialog, Card, Form, Input, Radio } from 'element-react';
+import { Button, Card } from 'element-react';
 
-import { convertDollarsToCents } from '../utils/utils';
 import { AuthContext } from '../context/auth/auth.context';
 import UpdateProductDialog from './update-product-dialog/update-product-dialog.component';
-import PayButton from './pay-button.component';
+import DeleteProductDialog from './delete-product-dialog/delete-product-dialog.component';
+// import PayButton from './pay-button.component';
 
 import { Product as _Product } from '../utils/custom-types';
 
@@ -17,7 +17,8 @@ interface Props {
 
 const Product: React.FC<Props> = ({ product }) => {
   const { auth } = React.useContext(AuthContext);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = React.useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const isProductOwner = auth && auth.attributes.sub === product.owner;
 
   return (
@@ -49,17 +50,31 @@ const Product: React.FC<Props> = ({ product }) => {
                     icon="edit"
                     className="m-1"
                     onClick={() => {
-                      setIsDialogOpen(true);
+                      setIsUploadDialogOpen(true);
                     }}
                   />
-                  <Button type="danger" icon="delete" />
+                  <Button
+                    type="danger"
+                    icon="delete"
+                    className="m-1"
+                    onClick={() => {
+                      setIsDeleteDialogOpen(true);
+                    }}
+                  />
                 </>
               )}
             </div>
             {/* Update Product Dialog */}
+
             <UpdateProductDialog
-              closeDialog={() => setIsDialogOpen(false)}
-              isOpen={isDialogOpen}
+              closeDialog={() => setIsUploadDialogOpen(false)}
+              isOpen={isUploadDialogOpen}
+              product={product}
+            />
+
+            <DeleteProductDialog
+              closeDialog={() => setIsDeleteDialogOpen(false)}
+              isOpen={isDeleteDialogOpen}
               product={product}
             />
           </div>
