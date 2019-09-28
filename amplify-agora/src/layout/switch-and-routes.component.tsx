@@ -5,7 +5,7 @@ import Navbar from '../components/navbar.component';
 
 import HomePage from '../pages/home.page.component';
 import ProfilePage from '../pages/profile.page.component';
-import MarketsPage from '../pages/markets.page.component';
+import MarketsPage from '../pages/market-page/markets.page.component';
 
 const SwitchAndRoutes: React.FC = () => {
   return (
